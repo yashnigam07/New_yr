@@ -1,0 +1,23 @@
+{
+  "name": "ny",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yashnigam07/New_yr.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yashnigam07/New_yr/issues"
+  },
+  "homepage": "https://github.com/yashnigam07/New_yr#readme",
+  "description": "",
+  "dependencies": {
+    "gsap": "^3.14.2"
+  }
+}
