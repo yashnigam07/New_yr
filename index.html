@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Moment Before Forever</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary: #7dd3fc;
+    --secondary: #fcd34d;
+    --accent: #fb7185;
+    --bg-start: #0b1026;
+    --bg-end: #1e3a8a;
+    --glass: rgba(255,255,255,0.12);
+    --glass-border: rgba(255,255,255,0.25);
+    --text: #ffffff;
+    --text-soft: rgba(255,255,255,0.85);
+    --text-faint: rgba(255,255,255,0.55);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    overflow:hidden;
+    background:linear-gradient(180deg,#0b1026,#1e3a8a,#60a5fa,#fde68a);
+    background-size:400% 400%;
+    animation:skyShift 30s ease infinite;
+    color:var(--text);
+}
+
+@keyframes skyShift{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+.stars,.particles{position:fixed;inset:0;pointer-events:none;z-index:1}
+.container{position:relative;z-index:10;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+
+.stage{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 1s ease;
+}
+.stage.active{opacity:1;pointer-events:auto}
+
+.glass-card{
+    background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.05));
+    backdrop-filter:blur(30px);
+    border:1px solid var(--glass-border);
+    border-radius:32px;
+    padding:70px 50px;
+    max-width:700px;
+    width:100%;
+    text-align:center;
+    box-shadow:0 30px 80px rgba(0,0,0,.45),inset 0 0 40px rgba(255,255,255,.12);
+    animation:floatIn 1.2s ease;
+}
+
+@keyframes floatIn{
+    from{opacity:0;transform:translateY(40px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+.title{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(3rem,8vw,5rem);
+    background:linear-gradient(135deg,#fff,var(--primary),var(--accent));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    text-shadow:0 0 25px rgba(125,211,252,.4),0 0 60px rgba(252,211,77,.25);
+    margin-bottom:20px;
+}
+
+.subtitle{color:var(--text-soft);font-weight:300;margin-bottom:50px}
+
+.question{
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:clamp(2rem,5vw,3rem);
+    margin-bottom:40px;
+}
+
+.btn{
+    padding:18px 56px;
+    font-size:1.1rem;
+    background:rgba(125,211,252,.2);
+    border:2px solid var(--primary);
+    border-radius:60px;
+    color:white;
+    cursor:pointer;
+    transition:.4s;
+}
+.btn:hover{transform:translateY(-4px);box-shadow:0 15px 40px rgba(125,211,252,.4)}
+
+#user-name{
+    width:100%;
+    padding:22px;
+    font-size:1.3rem;
+    text-align:center;
+    border-radius:20px;
+    background:rgba(255,255,255,.08);
+    border:2px solid rgba(255,255,255,.25);
+    color:white;
+    outline:none;
+    caret-color:var(--accent);
+    margin-bottom:30px;
+}
+
+.message-container{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(1.5rem,4vw,2.1rem);
+    line-height:1.9;
+}
+
+.message-line{
+    opacity:0;
+    transform:translateY(20px);
+    animation:fadeInUp 1.2s forwards;
+    margin-bottom:28px;
+}
+
+.message-line.highlight{
+    background:linear-gradient(90deg,var(--primary),var(--accent));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    font-style:italic;
+}
+
+@keyframes fadeInUp{
+    to{opacity:1;transform:translateY(0)}
+}
+
+.year-reveal{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(6rem,20vw,14rem);
+    background:linear-gradient(135deg,#fff,var(--primary),var(--secondary),var(--accent));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation:revealYear 3s ease forwards;
+}
+
+@keyframes revealYear{
+    0%{opacity:0;transform:translateY(60px) scale(.8);filter:blur(10px)}
+    60%{opacity:1;transform:translateY(-10px) scale(1.1);filter:blur(0)}
+    100%{transform:translateY(0) scale(1)}
+}
+
+.final-message{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(1.6rem,4vw,2.3rem);
+    line-height:2;
+}
+.final-message .highlight{
+    color:var(--secondary);
+    font-style:italic;
+    animation:heartbeat 3s infinite ease-in-out;
+}
+
+@keyframes heartbeat{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.05)}
+}
+
+.star{
+    position:absolute;
+    width:2px;height:2px;
+    background:white;
+    border-radius:50%;
+    animation:twinkle 4s infinite;
+}
+@keyframes twinkle{50%{opacity:.9}}
+
+.petal{
+    position:absolute;
+    width:14px;height:14px;
+    background:radial-gradient(circle,#fda4af,transparent 70%);
+    border-radius:50% 50% 50% 0;
+    opacity:.7;
+    animation:petalFall linear infinite;
+}
+@keyframes petalFall{
+    from{transform:translateY(-10vh) rotate(0)}
+    to{transform:translateY(110vh) translateX(80px) rotate(360deg)}
+}
+
+.confetti{
+    position:absolute;
+    width:10px;height:10px;
+    animation:fall 4s linear forwards;
+}
+@keyframes fall{
+    from{transform:translateY(-100px)}
+    to{transform:translateY(110vh)}
+}
+</style>
+</head>
+
+<body>
+<div class="stars"></div>
+
+<div class="container">
+
+<section class="stage active" id="stage-arrival">
+<div class="glass-card">
+<h1 class="title">My Love,</h1>
+<p class="subtitle">Before this year fades into memory…</p>
+<p class="subtitle">May I steal one quiet moment with you?</p>
+<button class="btn" id="btn-begin">Yes, always</button>
+</div>
+</section>
+
+<section class="stage" id="stage-name">
+<div class="glass-card">
+<p class="question">How do you wish me to whisper your name tonight?</p>
+<input id="user-name" placeholder="Your name, my heart…">
+<button class="btn" id="btn-continue">Let me in</button>
+</div>
+</section>
+
+<section class="stage" id="stage-reflection">
+<div class="glass-card">
+<div id="messages" class="message-container"></div>
+</div>
+</section>
+
+<section class="stage" id="stage-reveal">
+<div class="year-reveal" id="year-text"></div>
+</section>
+
+<section class="stage" id="stage-wish">
+<div class="glass-card">
+<div id="final-wish" class="final-message"></div>
+<button class="btn" id="btn-replay" style="margin-top:40px">Feel this again</button>
+</div>
+</section>
+
+</div>
+
+<script>
+const nextYear=new Date().getFullYear()+1;
+let userName="";
+
+const stages=document.querySelectorAll(".stage");
+
+function switchStage(id){
+stages.forEach(s=>s.classList.remove("active"));
+setTimeout(()=>document.getElementById(id).classList.add("active"),300);
+}
+
+function getReflectionMessages(name){
+return[
+`${name}, my heart has carried you through every moment of this year…`,
+`Through laughter that echoed in my soul,`,
+`Through quiet nights where the sky felt endless,`,
+`Through every sunrise that reminded me of you,`,
+`I loved you — silently, deeply, endlessly.`,
+`And now, as the world pauses…`,
+`<span class="highlight">I choose you again.</span>`,
+`<span class="highlight">For every tomorrow.</span>`
+];
+}
+
+function showMessages(){
+const box=document.getElementById("messages");
+box.innerHTML="";
+getReflectionMessages(userName).forEach((m,i)=>{
+setTimeout(()=>{
+const d=document.createElement("div");
+d.className="message-line";
+if(i>=6)d.classList.add("highlight");
+d.innerHTML=m;
+box.appendChild(d);
+if(i===7)setTimeout(()=>switchStage("stage-reveal"),3000);
+},i*2200);
+});
+}
+
+function finalWish(){
+document.getElementById("final-wish").innerHTML=`
+<p>${userName},</p>
+<p>May <span class="highlight">${nextYear}</span> be gentle with your heart.</p>
+<p>May your dreams find sunlight.</p>
+<p>And may love never feel distant.</p>
+<p style="margin-top:40px">I will be here — always.</p>
+<p style="margin-top:60px;font-size:2em"><span class="highlight">Happy New Year ✨</span></p>`;
+}
+
+document.getElementById("btn-begin").onclick=()=>switchStage("stage-name");
+document.getElementById("btn-continue").onclick=()=>{
+userName=document.getElementById("user-name").value||"My Love";
+switchStage("stage-reflection");
+setTimeout(showMessages,1000);
+setTimeout(()=>document.getElementById("year-text").innerText=nextYear,4000);
+setTimeout(()=>switchStage("stage-wish"),8500);
+setTimeout(finalWish,9000);
+};
+document.getElementById("btn-replay").onclick=()=>location.reload();
+
+function stars(){
+for(let i=0;i<150;i++){
+let s=document.createElement("div");
+s.className="star";
+s.style.left=Math.random()*100+"%";
+s.style.top=Math.random()*100+"%";
+document.querySelector(".stars").appendChild(s);
+}
+}
+function petals(){
+for(let i=0;i<20;i++){
+let p=document.createElement("div");
+p.className="petal";
+p.style.left=Math.random()*100+"%";
+p.style.animationDuration=15+Math.random()*10+"s";
+document.body.appendChild(p);
+}
+}
+stars();petals();
+</script>
+</body>
+</html>
