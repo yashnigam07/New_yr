@@ -1,313 +1,825 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Our Story</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winter, 2026 | To: The Senior</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300&family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030712;
+            --accent: #7dd3fc;
+            --text: #e2e8f0;
+            --thaw: #fbbf24;
+        }
 
-body {
-  min-height: 100vh;
-  background: #faf8f3;
-  color: #2c2c2c;
-  font-family: 'Lora', serif;
-  padding: 2rem;
-}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-.book {
-  max-width: 700px;
-  margin: 0 auto;
-  background: #fff;
-  padding: 3rem 2.5rem;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-  border-left: 4px solid #d4a574;
-}
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            transition: background-color 3s ease;
+        }
 
-.chapter {
-  display: none;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
+        #snowCanvas {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
 
-.chapter.active {
-  display: block;
-  animation: fadeIn 0.8s ease forwards;
-}
+        .aurora {
+            position: fixed;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle at center, rgba(125, 211, 252, 0.05) 0%, transparent 50%);
+            z-index: 0;
+            animation: drift 20s infinite alternate;
+        }
 
-@keyframes fadeIn {
-  to { opacity: 1; }
-}
+        @keyframes drift { 
+            from { transform: translate(-10%, -10%); } 
+            to { transform: translate(10%, 10%); } 
+        }
 
-.chapter-number {
-  font-family: 'Crimson Text', serif;
-  font-size: 0.9rem;
-  letter-spacing: 2px;
-  color: #999;
-  margin-bottom: 1rem;
-  text-transform: uppercase;
-}
+        #frost-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 15, 25, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: opacity 1.5s ease;
+        }
 
-h2 {
-  font-family: 'Crimson Text', serif;
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  color: #1a1a1a;
-}
+        .frost-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1.5rem;
+            color: var(--accent);
+            letter-spacing: 5px;
+            animation: pulse 2s infinite;
+        }
 
-p {
-  font-size: 1.1rem;
-  line-height: 1.85;
-  margin-bottom: 1.3rem;
-  color: #3a3a3a;
-  text-align: justify;
-}
+        .viewport {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
 
-.continue-btn {
-  display: block;
-  margin: 2.5rem auto 0;
-  padding: 0.7rem 2rem;
-  background: #2c2c2c;
-  color: #fff;
-  border: none;
-  font-family: 'Lora', serif;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  letter-spacing: 1px;
-}
+        .content-card {
+            max-width: 650px;
+            text-align: center;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease;
+            padding: 20px;
+        }
 
-.continue-btn:hover {
-  background: #1a1a1a;
-}
+        .content-card.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-.final-question {
-  text-align: center;
-  margin: 3rem 0 2rem;
-  font-family: 'Crimson Text', serif;
-  font-size: 1.8rem;
-  color: #d4a574;
-  font-weight: 600;
-}
+        .lyric-ref {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            display: block;
+            opacity: 0.8;
+        }
 
-.answer-buttons {
-  text-align: center;
-  margin-top: 2rem;
-}
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 300;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
 
-.answer-btn {
-  margin: 0 0.5rem;
-  padding: 0.8rem 2.5rem;
-  background: transparent;
-  border: 2px solid #d4a574;
-  color: #d4a574;
-  font-family: 'Lora', serif;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
+        h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            font-weight: 300;
+            color: var(--accent);
+            margin: 2rem 0 1rem;
+        }
 
-.answer-btn:hover {
-  background: #d4a574;
-  color: #fff;
-}
+        p {
+            font-weight: 200;
+            line-height: 1.8;
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+        }
 
-.divider {
-  text-align: center;
-  margin: 2rem 0;
-  color: #ccc;
-  font-size: 1.2rem;
-}
-</style>
+        .bold { color: var(--text); font-weight: 400; }
+
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 2rem 0;
+        }
+
+        .memory-card {
+            background: rgba(125, 211, 252, 0.03);
+            border: 1px solid rgba(125, 211, 252, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .memory-card:hover {
+            border-color: rgba(125, 211, 252, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .memory-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .memory-card p {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .playlist {
+            background: rgba(125, 211, 252, 0.03);
+            border: 1px solid rgba(125, 211, 252, 0.1);
+            padding: 25px;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .playlist-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .playlist-item:hover {
+            background: rgba(125, 211, 252, 0.05);
+            transform: translateX(5px);
+        }
+
+        .playlist-icon {
+            font-size: 1.5rem;
+        }
+
+        .playlist-info {
+            text-align: left;
+            flex: 1;
+        }
+
+        .playlist-info .song-title {
+            color: var(--text);
+            font-weight: 300;
+            font-size: 1rem;
+        }
+
+        .playlist-info .song-artist {
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: 1px solid rgba(125, 211, 252, 0.3);
+            color: var(--accent);
+            padding: 15px 35px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.4s;
+            font-family: 'Inter', sans-serif;
+            margin: 10px;
+        }
+
+        .action-btn:hover {
+            border-color: var(--accent);
+            background: rgba(125, 211, 252, 0.05);
+            letter-spacing: 5px;
+        }
+
+        .choice-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        body.thawed {
+            background-color: #1a140a;
+        }
+
+        body.thawed .lyric-ref, 
+        body.thawed .action-btn,
+        body.thawed h2,
+        body.thawed .memory-card h3,
+        body.thawed .memory-card {
+            color: var(--thaw);
+            border-color: rgba(251, 191, 36, 0.3);
+        }
+
+        body.thawed .playlist {
+            border-color: rgba(251, 191, 36, 0.3);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            background: rgba(125, 211, 252, 0.05);
+            border: 1px solid rgba(125, 211, 252, 0.3);
+            padding: 15px;
+            color: var(--text);
+            font-family: 'Cormorant Garamond', serif;
+            margin: 15px 0;
+            font-size: 1rem;
+            resize: vertical;
+            border-radius: 4px;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        body.thawed textarea {
+            background: rgba(251, 191, 36, 0.05);
+            border-color: var(--thaw);
+        }
+
+        .question-box {
+            background: rgba(125, 211, 252, 0.03);
+            border-left: 3px solid var(--accent);
+            padding: 20px;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .question-box p {
+            margin: 0.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        body.thawed .question-box {
+            border-left-color: var(--thaw);
+        }
+
+        #music-indicator {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            color: var(--accent);
+            z-index: 100;
+            opacity: 0.5;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        .note-saved {
+            margin-top: 20px;
+            display: none;
+            font-style: italic;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .heart-float {
+            position: fixed;
+            font-size: 2rem;
+            pointer-events: none;
+            z-index: 1001;
+            animation: floatUp 3s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(0); }
+            50% { transform: translateY(-100px) scale(1); }
+            100% { opacity: 0; transform: translateY(-200px) scale(0.5); }
+        }
+
+        .progress-dots {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(125, 211, 252, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: var(--accent);
+            transform: scale(1.3);
+        }
+
+        body.thawed .dot.active {
+            background: var(--thaw);
+        }
+    </style>
 </head>
-<body>
+<body id="main-body">
 
-<div class="book">
-  <div class="chapter active" id="chapter1">
-    <div class="chapter-number">Chapter One</div>
-    <h2>The Beginning</h2>
-    <p>
-      Every great love story has a beginning. Ours started simply—a conversation, a shared laugh, a moment that felt effortless. I didn't know it then, but something had shifted.
-    </p>
-    <p>
-      You were just another person in a crowded world. But then you spoke, and suddenly, the noise faded. Your words had weight. Your smile had warmth. And I found myself wanting to know more.
-    </p>
-    <p>
-      Days turned into weeks. Conversations became something I looked forward to. Without even trying, you had become part of my routine, my thoughts, my world.
-    </p>
-    <button class="continue-btn" onclick="nextChapter(2)">Continue Reading</button>
-  </div>
+    <audio id="snowman-song" loop>
+        <source src="snowman.mpeg" type="audio/mpeg">
+    </audio>
 
-  <div class="chapter" id="chapter2">
-    <div class="chapter-number">Chapter Two</div>
-    <h2>The Realization</h2>
-    <p>
-      There's a moment in every story when everything becomes clear. Mine came quietly, on an ordinary day. I was thinking about something mundane—what to have for dinner, perhaps—and then, suddenly, I was thinking about you.
-    </p>
-    <p>
-      Not just thinking. Wondering. What were you doing? Would you find this funny? Would you like to be here?
-    </p>
-    <p>
-      That's when I understood. You weren't just someone I enjoyed talking to. You had become someone I couldn't imagine not talking to. My days felt incomplete without you in them somehow.
-    </p>
-    <p>
-      Love, I realized, doesn't always announce itself. Sometimes it simply arrives, settles in, and makes itself at home before you even notice.
-    </p>
-    <button class="continue-btn" onclick="nextChapter(3)">Continue Reading</button>
-  </div>
+    <div class="aurora"></div>
+    <canvas id="snowCanvas"></canvas>
+    <div id="music-indicator">♪ SIA - SNOWMAN</div>
 
-  <div class="chapter" id="chapter3">
-    <div class="chapter-number">Chapter Three</div>
-    <h2>The Truth</h2>
-    <p>
-      So here we are. At the part of the story where I stop hiding behind casual words and comfortable distance. The part where I tell you the truth.
-    </p>
-    <p>
-      I love you. Not in the fleeting, uncertain way of new feelings. But in the steady, sure way of someone who has found something real. Something worth protecting. Something worth fighting for.
-    </p>
-    <p>
-      I love the way you see the world. I love how you make me see myself differently. I love that with you, everything feels possible and nothing feels forced.
-    </p>
-    <p>
-      I don't know what tomorrow holds. I can't promise perfection. But I can promise honesty, effort, and a heart that chose you and continues to choose you every single day.
-    </p>
-    <button class="continue-btn" onclick="nextChapter(4)">Continue Reading</button>
-  </div>
-
-  <div class="chapter" id="chapter4">
-    <div class="chapter-number">Chapter Four</div>
-    <h2>The Question</h2>
-    <p>
-      Every story needs a turning point. A moment where everything could go one way or another. A choice that changes everything.
-    </p>
-    <p>
-      This is ours.
-    </p>
-    <p>
-      I'm not asking for promises you can't keep or feelings you don't have. I'm simply asking if you'll let this story continue. If you'll take my hand and see where this path leads us.
-    </p>
-    
-    <div class="divider">❦</div>
-    
-    <p class="final-question">Will you be mine?</p>
-    
-    <div class="answer-buttons">
-      <button class="answer-btn" onclick="answer('yes')">Yes</button>
-      <button class="answer-btn" onclick="answer('no')">Not Yet</button>
+    <div id="frost-overlay" onclick="startExperience()">
+        <div class="frost-text">TAP TO THAW</div>
     </div>
-  </div>
 
-  <div class="chapter" id="epilogue">
-    <div class="chapter-number">Epilogue</div>
-    <h2>The Next Chapter</h2>
-    <p>
-      You said yes. And with those words, everything changed and nothing changed at the same time.
-    </p>
-    <p>
-      We're still us. Still the same two people who found each other in this vast, chaotic world. But now we're choosing to walk forward together, intentionally, hopefully, bravely.
-    </p>
-    <p>
-      This isn't the end of the story. It's just the end of the beginning. The rest? We'll write it together. One day, one moment, one choice at a time.
-    </p>
-    <p>
-      Thank you for saying yes. Thank you for being you. Thank you for letting me be part of your story.
-    </p>
-    <div class="divider">❦</div>
-    <p style="text-align: center; font-style: italic; color: #999;">To be continued... forever ❤️</p>
-  </div>
-</div>
+    <main class="viewport">
+        
+        <!-- Scene 1 -->
+        <section class="content-card active" id="scene1">
+            <span class="lyric-ref">"Don't cry, snowman, not in front of me"</span>
+            <h1>The View from <br>the Junior Side.</h1>
+            <p>
+                In a campus full of thousands, it's funny how the eyes focus on just one person. 
+                While you were busy leading workshops and preparing to conquer the world, 
+                I was busy noticing the way you make <span class="bold">ambition look effortless.</span>
+            </p>
+            <p>
+                The way you light up when explaining something you're passionate about. 
+                The quiet confidence in how you carry yourself through the chaos of final year. 
+                Even the small things—like how you always have a kind word for juniors who approach you nervously.
+            </p>
+            <div class="progress-dots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <button class="action-btn" onclick="showScene(2)">Continue</button>
+        </section>
 
-<script>
-function nextChapter(num) {
-  const current = document.querySelector('.chapter.active');
-  current.classList.remove('active');
-  
-  setTimeout(() => {
-    document.getElementById('chapter' + num).classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, 300);
-}
+        <!-- Scene 2 -->
+        <section class="content-card" id="scene2">
+            <span class="lyric-ref">"I want you to know that I'm never leaving"</span>
+            <h1>The Moments <br>I've Collected.</h1>
+            <p>
+                Every interaction with you became something I'd replay later. 
+                Small moments that probably meant nothing to you, but everything to me.
+            </p>
+            <div class="memory-grid">
+                <div class="memory-card">
+                    <h3>📚 The Library</h3>
+                    <p>When you explained that complex concept to me, and actually made it make sense. Your patience was beautiful.</p>
+                </div>
+                <div class="memory-card">
+                    <h3>☕ The Café</h3>
+                    <p>You mentioned your favorite drink once in passing. I remember thinking I'd love to buy you one someday.</p>
+                </div>
+                <div class="memory-card">
+                    <h3>🎭 The Event</h3>
+                    <p>Watching you present on stage, so composed and articulate. I was just another face in the crowd, mesmerized.</p>
+                </div>
+                <div class="memory-card">
+                    <h3>🌙 Late Nights</h3>
+                    <p>Seeing your light on in the study room. Wondering if you're okay, if you're taking care of yourself.</p>
+                </div>
+            </div>
+            <div class="progress-dots">
+                <div class="dot"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <button class="action-btn" onclick="showScene(3)">Keep Reading</button>
+        </section>
 
-async function answer(response) {
-  // Save her response
-  try {
-    await window.storage.set('proposal_response', JSON.stringify({
-      answer: response,
-      timestamp: new Date().toISOString()
-    }), true);
-  } catch (err) {
-    console.log('Storage save:', err);
-  }
-  
-  const current = document.querySelector('.chapter.active');
-  current.classList.remove('active');
-  
-  setTimeout(() => {
-    if (response === 'yes') {
-      document.getElementById('epilogue').classList.add('active');
-    } else {
-      current.innerHTML = `
-        <div class="chapter-number">A Pause</div>
-        <h2>I Understand</h2>
-        <p>
-          Some stories need more time. Some chapters need to be reread before moving forward. And that's okay.
-        </p>
-        <p>
-          Wherever this leads, know that asking the question was worth it. You're worth it.
-        </p>
-        <p style="text-align: center; margin-top: 3rem; color: #999;">❤️</p>
-      `;
-      current.classList.add('active');
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, 300);
-}
+        <!-- Scene 3 -->
+        <section class="content-card" id="scene3">
+            <span class="lyric-ref">"A puddle of water can't hold me close, baby"</span>
+            <h1>The Fear of Melting.</h1>
+            <p>
+                As a Senior, you're about to "thaw" out of this college bubble and head into the sun. 
+                I realized that if I didn't say something now, this chance—this moment—might just melt away into a memory. 
+            </p>
+            <p>
+                I know timing isn't perfect. You have placements, projects, a thousand farewells to say. 
+                But what if the "right time" is just another way of saying "too late"?
+            </p>
+            <p>
+                <span class="bold">I'd rather take a chance in the cold with you than stay warm with regret.</span>
+            </p>
+            <div class="progress-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <button class="action-btn" onclick="showScene(4)">Continue</button>
+        </section>
 
-// Check mode for you to see her response
-async function checkResponse() {
-  try {
-    const result = await window.storage.get('proposal_response', true);
-    if (result && result.value) {
-      const data = JSON.parse(result.value);
-      const date = new Date(data.timestamp).toLocaleString();
-      document.querySelector('.book').innerHTML = `
-        <div style="text-align: center; padding: 3rem;">
-          <h2 style="color: ${data.answer === 'yes' ? '#4a9d5f' : '#d4a574'}; font-size: 3rem; margin-bottom: 1rem;">
-            ${data.answer === 'yes' ? '✓ She said YES!' : '○ She needs time'}
-          </h2>
-          <p style="font-size: 1.2rem; color: #666;">
-            Response received: ${date}
-          </p>
-          <p style="margin-top: 2rem; font-size: 0.95rem; color: #999;">
-            ${data.answer === 'yes' ? 'Congratulations! 🎉❤️' : 'Give her space and time ❤️'}
-          </p>
-        </div>
-      `;
-    } else {
-      document.querySelector('.book').innerHTML = `
-        <div style="text-align: center; padding: 3rem;">
-          <h2 style="color: #999; font-size: 2rem;">No response yet</h2>
-          <p style="margin-top: 1rem; color: #666;">She hasn't answered yet. Be patient! ❤️</p>
-        </div>
-      `;
-    }
-  } catch (err) {
-    document.querySelector('.book').innerHTML = `
-      <div style="text-align: center; padding: 3rem;">
-        <h2 style="color: #999;">No response yet</h2>
-        <p style="margin-top: 1rem; color: #666;">She hasn't answered yet. Be patient! ❤️</p>
-      </div>
-    `;
-  }
-}
+        <!-- Scene 4 -->
+        <section class="content-card" id="scene4">
+            <span class="lyric-ref">"Let's go below zero and hide from the sun"</span>
+            <h1>What I'd Love <br>to Know.</h1>
+            <p>
+                If you say yes to coffee with me, these are some things I'd love to talk about. 
+                No pressure, just curiosity about the person behind the Senior everyone admires.
+            </p>
+            <div class="question-box">
+                <p><span class="bold">🌍</span> What city are you dreaming of living in after graduation?</p>
+                <p><span class="bold">📖</span> What's a book or movie that changed how you see the world?</p>
+                <p><span class="bold">✨</span> What's something you're passionate about that people might not expect?</p>
+                <p><span class="bold">🎵</span> What song has been on repeat for you lately?</p>
+                <p><span class="bold">💭</span> What's one thing you wish people understood about being a Senior?</p>
+            </div>
+            <p style="font-style: italic; opacity: 0.8;">
+                But honestly, I'd be happy just listening to whatever you want to share.
+            </p>
+            <div class="progress-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <button class="action-btn" onclick="showScene(5)">Next</button>
+        </section>
 
-// Auto-check if URL has ?check parameter
-if (window.location.search.includes('check')) {
-  checkResponse();
-}
-</script>
+        <!-- Scene 5 -->
+        <section class="content-card" id="scene5">
+            <span class="lyric-ref">"I love you forever where we'll be together"</span>
+            <h1>A Playlist for <br>the Winter.</h1>
+            <p>
+                I made a small playlist of songs that remind me of this feeling. 
+                Maybe you'll listen to it sometime and think of this moment.
+            </p>
+            <div class="playlist">
+                <div class="playlist-item">
+                    <span class="playlist-icon">❄️</span>
+                    <div class="playlist-info">
+                        <div class="song-title">Snowman</div>
+                        <div class="song-artist">Sia</div>
+                    </div>
+                </div>
+                <div class="playlist-item">
+                    <span class="playlist-icon">🌙</span>
+                    <div class="playlist-info">
+                        <div class="song-title">Romantic Homicide</div>
+                        <div class="song-artist">d4vd</div>
+                    </div>
+                </div>
+                <div class="playlist-item">
+                    <span class="playlist-icon">💫</span>
+                    <div class="playlist-info">
+                        <div class="song-title">The Night We Met</div>
+                        <div class="song-artist">Lord Huron</div>
+                    </div>
+                </div>
+                <div class="playlist-item">
+                    <span class="playlist-icon">✨</span>
+                    <div class="playlist-info">
+                        <div class="song-title">Someone To You</div>
+                        <div class="song-artist">BANNERS</div>
+                    </div>
+                </div>
+                <div class="playlist-item">
+                    <span class="playlist-icon">🌸</span>
+                    <div class="playlist-info">
+                        <div class="song-title">Enchanted</div>
+                        <div class="song-artist">Taylor Swift</div>
+                    </div>
+                </div>
+            </div>
+            <div class="progress-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+            </div>
+            <button class="action-btn" onclick="showScene(6)">Almost There</button>
+        </section>
 
+        <!-- Scene 6 -->
+        <section class="content-card" id="scene6">
+            <span class="lyric-ref">"So don't cry, snowman, don't leave me this way"</span>
+            <h1>The Question.</h1>
+            <p>
+                I want to stop the clock for an hour. No lectures, no placement stress, no Senior/Junior labels. 
+                Just two people, two cups of coffee, and honest conversation.
+            </p>
+            <p>
+                Maybe at that café you mentioned once. Or anywhere you'd like. 
+                A quiet bookstore café, a place with a view, or even just the campus bench under the stars.
+            </p>
+            <p>
+                I want to hear about your dreams beyond the campus gates, the cities you want to see, 
+                the version of yourself you're becoming. And maybe share a bit about the person I'm trying to be too.
+            </p>
+            <p style="margin-top: 2rem;">
+                <span class="bold" style="font-size: 1.1rem;">Will you let me take you out before the winter ends?</span>
+            </p>
+            <div class="progress-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot active"></div>
+            </div>
+            <div class="choice-group">
+                <button class="action-btn" style="background: var(--accent); color: var(--bg);" onclick="finalResponse('yes')">Yes, I'd like that</button>
+                <button class="action-btn" onclick="finalResponse('no')">Maybe as friends?</button>
+            </div>
+        </section>
+
+        <!-- Ending: Yes -->
+        <section class="content-card" id="end-yes">
+            <h1 style="color: var(--thaw);">The Ice Breaks. ☀️</h1>
+            <p>
+                I can't believe you said yes. I'm smiling like an idiot right now.
+            </p>
+            <p>
+                I'll reach out to you soon to find a time that works with your schedule. 
+                No rush—I know you're busy. But I'm already looking forward to it more than I can express.
+            </p>
+            <h2>Before You Go...</h2>
+            <p style="font-style: italic; opacity: 0.9;">
+                Would you like to leave me a note? Something for me to read and re-read 
+                as I count down the days to our coffee date. Your words, your thoughts—anything you'd like to share.
+            </p>
+            <textarea id="note-yes" placeholder="Dear Junior..."></textarea>
+            <button class="action-btn" onclick="saveNote('yes')" style="border-color: var(--thaw); color: var(--thaw);">Seal This Memory</button>
+            <div id="note-saved-yes" class="note-saved" style="color: var(--thaw);">
+                💛 Your words are now a part of this story. Thank you for saying yes. See you soon, Senior.
+            </div>
+        </section>
+
+        <!-- Ending: No -->
+        <section class="content-card" id="end-no">
+            <h1>I Understand. 💙</h1>
+            <p>
+                Thank you for being honest with me. That takes courage, and I respect you even more for it.
+            </p>
+            <p>
+                The winter is still beautiful, even from a distance. I'll still be cheering for you 
+                from the sidelines—in placements, in life, in everything you do next.
+            </p>
+            <p>
+                You made college a little more magical just by being you. 
+                I hope you know how many people you've inspired without even trying.
+            </p>
+            <h2 style="color: var(--accent);">One Last Thing...</h2>
+            <p style="font-style: italic; opacity: 0.8;">
+                If there's anything you'd like to say—advice for a junior still figuring things out, 
+                encouragement, or just a thought you want to share—I'd cherish it.
+            </p>
+            <textarea id="note-no" placeholder="To the Junior who asked..."></textarea>
+            <button class="action-btn" onclick="saveNote('no')">Leave Your Words</button>
+            <div id="note-saved-no" class="note-saved">
+                Thank you. Your words mean more than you know. All the best for what comes next, Senior. ❄️
+            </div>
+        </section>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        const song = document.getElementById('snowman-song');
+        let currentScene = 1;
+
+        function startExperience() {
+            song.play().catch(e => console.log('Audio autoplay prevented'));
+            document.getElementById('frost-overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('frost-overlay').style.display = 'none';
+            }, 1500);
+        }
+
+        function showScene(id) {
+            currentScene = id;
+            const current = document.querySelector('.content-card.active');
+            current.style.opacity = '0';
+            current.style.transform = 'translateY(-20px)';
+            
+            setTimeout(() => {
+                current.classList.remove('active');
+                current.style.display = 'none';
+                
+                const next = document.getElementById('scene' + id);
+                next.style.display = 'block';
+                
+                setTimeout(() => {
+                    next.classList.add('active');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 50);
+            }, 800);
+        }
+
+        function finalResponse(type) {
+            if (type === 'yes') {
+                document.getElementById('main-body').classList.add('thawed');
+                
+                // Multiple confetti bursts
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        colors: ['#fbbf24', '#ffffff', '#7dd3fc']
+                    });
+                }, 100);
+                
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#fbbf24', '#ffffff']
+                    });
+                    confetti({
+                        particleCount: 50,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#fbbf24', '#ffffff']
+                    });
+                }, 400);
+
+                // Floating hearts
+                for(let i = 0; i < 5; i++) {
+                    setTimeout(() => createFloatingHeart(), i * 400);
+                }
+            }
+
+            const current = document.querySelector('.content-card.active');
+            current.style.opacity = '0';
+            
+            setTimeout(() => {
+                current.style.display = 'none';
+                const end = document.getElementById('end-' + type);
+                end.style.display = 'block';
+                setTimeout(() => {
+                    end.classList.add('active');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 50);
+            }, 800);
+        }
+
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart-float';
+            heart.textContent = '💛';
+            heart.style.left = Math.random() * window.innerWidth + 'px';
+            heart.style.top = window.innerHeight - 100 + 'px';
+            document.body.appendChild(heart);
+            
+            setTimeout(() => heart.remove(), 3000);
+        }
+
+        function saveNote(type) {
+            const note = document.getElementById('note-' + type).value.trim();
+            const savedMsg = document.getElementById('note-saved-' + type);
+            
+            if (note) {
+                console.log('='.repeat(50));
+                console.log('💌 NOTE FROM SENIOR:');
+                console.log('='.repeat(50));
+                console.log(note);
+                console.log('='.repeat(50));
+                
+                document.getElementById('note-' + type).style.display = 'none';
+                document.querySelector('#end-' + type + ' .action-btn').style.display = 'none';
+                savedMsg.style.display = 'block';
+                
+                if (type === 'yes') {
+                    setTimeout(() => {
+                        confetti({
+                            particleCount: 60,
+                            angle: 60,
+                            spread: 55,
+                            origin: { x: 0 },
+                            colors: ['#fbbf24', '#ffffff', '#f472b6']
+                        });
+                        confetti({
+                            particleCount: 60,
+                            angle: 120,
+                            spread: 55,
+                            origin: { x: 1 },
+                            colors: ['#fbbf24', '#ffffff', '#f472b6']
+                        });
+                    }, 300);
+                    
+                    for(let i = 0; i < 3; i++) {
+                        setTimeout(() => createFloatingHeart(), i * 300);
+                    }
+                }
+            } else {
+                const textarea = document.getElementById('note-' + type);
+                textarea.style.borderColor = type === 'yes' ? 'rgba(251, 191, 36, 0.7)' : 'rgba(125, 211, 252, 0.7)';
+                textarea.placeholder = 'I\'d love to read your thoughts... 💭';
+                setTimeout(() => {
+                    textarea.style.borderColor = '';
+                }, 1500);
+            }
+        }
+
+        // Snow Animation
+        const canvas = document.getElementById('snowCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Snowflake {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - canvas.height;
+                this.size = Math.random() * 2.5 + 1;
+                this.speed = Math.random() * 1 + 0.5;
+                this.opacity = Math.random() * 0.5 + 0.3;
+                this.drift = Math.random() * 0.5 - 0.25;
+            }
+            update() {
+                this.y += this.speed;
+                this.x += this.drift;
+                if (this.y > canvas.height) {
+                    this.y = -10;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 150; i++) particles.push(new Snowflake());
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
 </body>
 </html>
