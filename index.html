@@ -1,280 +1,313 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>The Last Minute</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-
+<meta charset="UTF-8">
+<title>Our Story</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#040406;
-  --cold:#7aa2ff;
-  --warm:#f4c430;
-  --soft:#cbd5e1;
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  min-height: 100vh;
+  background: #faf8f3;
+  color: #2c2c2c;
+  font-family: 'Lora', serif;
+  padding: 2rem;
 }
 
-*{margin:0;padding:0;box-sizing:border-box}
-
-body{
-  background:radial-gradient(circle at top,#0b1020,#020204);
-  color:var(--soft);
-  font-family:Inter,sans-serif;
-  height:100vh;
-  overflow:hidden;
-  cursor:none;
+.book {
+  max-width: 700px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  border-left: 4px solid #d4a574;
 }
 
-/* grain */
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:url("https://grainy-gradients.vercel.app/noise.svg");
-  opacity:.08;
-  pointer-events:none;
+.chapter {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
 }
 
-/* cursor trail */
-.cursor{
-  position:fixed;
-  width:12px;
-  height:12px;
-  border-radius:50%;
-  background:var(--warm);
-  pointer-events:none;
-  mix-blend-mode:screen;
-  filter:blur(1px);
+.chapter.active {
+  display: block;
+  animation: fadeIn 0.8s ease forwards;
 }
 
-canvas{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
+@keyframes fadeIn {
+  to { opacity: 1; }
 }
 
-.center{
-  position:absolute;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  padding:20px;
+.chapter-number {
+  font-family: 'Crimson Text', serif;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  color: #999;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
 }
 
-h1{
-  font-family:Playfair Display,serif;
-  font-size:clamp(2.5rem,7vw,5rem);
-  margin-bottom:1rem;
+h2 {
+  font-family: 'Crimson Text', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #1a1a1a;
 }
 
-p{
-  font-size:1.15rem;
-  opacity:.75;
-  max-width:720px;
+p {
+  font-size: 1.1rem;
+  line-height: 1.85;
+  margin-bottom: 1.3rem;
+  color: #3a3a3a;
+  text-align: justify;
 }
 
-.timer{
-  margin-top:2rem;
-  font-family:Playfair Display,serif;
-  font-size:clamp(5rem,12vw,9rem);
-  color:var(--cold);
+.continue-btn {
+  display: block;
+  margin: 2.5rem auto 0;
+  padding: 0.7rem 2rem;
+  background: #2c2c2c;
+  color: #fff;
+  border: none;
+  font-family: 'Lora', serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  letter-spacing: 1px;
 }
 
-input{
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(244,196,48,.4);
-  border-radius:14px;
-  color:white;
-  padding:18px 26px;
-  font-size:1.6rem;
-  text-align:center;
-  outline:none;
-  width:min(90%,420px);
-  display:none;
+.continue-btn:hover {
+  background: #1a1a1a;
 }
 
-.final{
-  display:none;
+.final-question {
+  text-align: center;
+  margin: 3rem 0 2rem;
+  font-family: 'Crimson Text', serif;
+  font-size: 1.8rem;
+  color: #d4a574;
+  font-weight: 600;
 }
 
-.final h1{
-  background:linear-gradient(45deg,var(--warm),#ff8fab);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
+.answer-buttons {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.answer-btn {
+  margin: 0 0.5rem;
+  padding: 0.8rem 2.5rem;
+  background: transparent;
+  border: 2px solid #d4a574;
+  color: #d4a574;
+  font-family: 'Lora', serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.answer-btn:hover {
+  background: #d4a574;
+  color: #fff;
+}
+
+.divider {
+  text-align: center;
+  margin: 2rem 0;
+  color: #ccc;
+  font-size: 1.2rem;
 }
 </style>
 </head>
-
 <body>
 
-<canvas id="c"></canvas>
-<div class="cursor" id="cursor"></div>
+<div class="book">
+  <div class="chapter active" id="chapter1">
+    <div class="chapter-number">Chapter One</div>
+    <h2>The Beginning</h2>
+    <p>
+      Every great love story has a beginning. Ours started simply—a conversation, a shared laugh, a moment that felt effortless. I didn't know it then, but something had shifted.
+    </p>
+    <p>
+      You were just another person in a crowded world. But then you spoke, and suddenly, the noise faded. Your words had weight. Your smile had warmth. And I found myself wanting to know more.
+    </p>
+    <p>
+      Days turned into weeks. Conversations became something I looked forward to. Without even trying, you had become part of my routine, my thoughts, my world.
+    </p>
+    <button class="continue-btn" onclick="nextChapter(2)">Continue Reading</button>
+  </div>
 
-<div class="center" id="stage">
-  <h1 id="title">The Last Minute</h1>
-  <p id="line">Stay. Don’t rush this moment.</p>
-  <div class="timer" id="time">60</div>
-</div>
+  <div class="chapter" id="chapter2">
+    <div class="chapter-number">Chapter Two</div>
+    <h2>The Realization</h2>
+    <p>
+      There's a moment in every story when everything becomes clear. Mine came quietly, on an ordinary day. I was thinking about something mundane—what to have for dinner, perhaps—and then, suddenly, I was thinking about you.
+    </p>
+    <p>
+      Not just thinking. Wondering. What were you doing? Would you find this funny? Would you like to be here?
+    </p>
+    <p>
+      That's when I understood. You weren't just someone I enjoyed talking to. You had become someone I couldn't imagine not talking to. My days felt incomplete without you in them somehow.
+    </p>
+    <p>
+      Love, I realized, doesn't always announce itself. Sometimes it simply arrives, settles in, and makes itself at home before you even notice.
+    </p>
+    <button class="continue-btn" onclick="nextChapter(3)">Continue Reading</button>
+  </div>
 
-<div class="center final" id="final">
-  <h1 id="wish"></h1>
-  <p id="personal"></p>
+  <div class="chapter" id="chapter3">
+    <div class="chapter-number">Chapter Three</div>
+    <h2>The Truth</h2>
+    <p>
+      So here we are. At the part of the story where I stop hiding behind casual words and comfortable distance. The part where I tell you the truth.
+    </p>
+    <p>
+      I love you. Not in the fleeting, uncertain way of new feelings. But in the steady, sure way of someone who has found something real. Something worth protecting. Something worth fighting for.
+    </p>
+    <p>
+      I love the way you see the world. I love how you make me see myself differently. I love that with you, everything feels possible and nothing feels forced.
+    </p>
+    <p>
+      I don't know what tomorrow holds. I can't promise perfection. But I can promise honesty, effort, and a heart that chose you and continues to choose you every single day.
+    </p>
+    <button class="continue-btn" onclick="nextChapter(4)">Continue Reading</button>
+  </div>
+
+  <div class="chapter" id="chapter4">
+    <div class="chapter-number">Chapter Four</div>
+    <h2>The Question</h2>
+    <p>
+      Every story needs a turning point. A moment where everything could go one way or another. A choice that changes everything.
+    </p>
+    <p>
+      This is ours.
+    </p>
+    <p>
+      I'm not asking for promises you can't keep or feelings you don't have. I'm simply asking if you'll let this story continue. If you'll take my hand and see where this path leads us.
+    </p>
+    
+    <div class="divider">❦</div>
+    
+    <p class="final-question">Will you be mine?</p>
+    
+    <div class="answer-buttons">
+      <button class="answer-btn" onclick="answer('yes')">Yes</button>
+      <button class="answer-btn" onclick="answer('no')">Not Yet</button>
+    </div>
+  </div>
+
+  <div class="chapter" id="epilogue">
+    <div class="chapter-number">Epilogue</div>
+    <h2>The Next Chapter</h2>
+    <p>
+      You said yes. And with those words, everything changed and nothing changed at the same time.
+    </p>
+    <p>
+      We're still us. Still the same two people who found each other in this vast, chaotic world. But now we're choosing to walk forward together, intentionally, hopefully, bravely.
+    </p>
+    <p>
+      This isn't the end of the story. It's just the end of the beginning. The rest? We'll write it together. One day, one moment, one choice at a time.
+    </p>
+    <p>
+      Thank you for saying yes. Thank you for being you. Thank you for letting me be part of your story.
+    </p>
+    <div class="divider">❦</div>
+    <p style="text-align: center; font-style: italic; color: #999;">To be continued... forever ❤️</p>
+  </div>
 </div>
 
 <script>
-/* ================= CURSOR TRAIL ================= */
-const cursor = document.getElementById("cursor");
-window.addEventListener("mousemove", e=>{
-  gsap.to(cursor,{x:e.clientX-6,y:e.clientY-6,duration:.15});
-});
-
-/* ================= CANVAS PARTICLES ================= */
-const canvas=document.getElementById("c");
-const ctx=canvas.getContext("2d");
-resize();
-window.addEventListener("resize",resize);
-
-function resize(){
-  canvas.width=innerWidth;
-  canvas.height=innerHeight;
+function nextChapter(num) {
+  const current = document.querySelector('.chapter.active');
+  current.classList.remove('active');
+  
+  setTimeout(() => {
+    document.getElementById('chapter' + num).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 300);
 }
 
-let particles=[];
-class Particle{
-  constructor(x,y){
-    this.x=x;this.y=y;
-    this.vx=(Math.random()-.5)*4;
-    this.vy=(Math.random()-.5)*4;
-    this.z=Math.random()*2;
-    this.life=1;
+async function answer(response) {
+  // Save her response
+  try {
+    await window.storage.set('proposal_response', JSON.stringify({
+      answer: response,
+      timestamp: new Date().toISOString()
+    }), true);
+  } catch (err) {
+    console.log('Storage save:', err);
   }
-  update(){
-    this.vy+=0.03;
-    this.x+=this.vx;
-    this.y+=this.vy;
-    this.life-=0.006;
-  }
-  draw(){
-    ctx.fillStyle=`rgba(244,196,48,${this.life})`;
-    ctx.beginPath();
-    ctx.arc(this.x,this.y,2*this.z,0,Math.PI*2);
-    ctx.fill();
-  }
-}
-
-function animate(){
-  ctx.fillStyle="rgba(4,4,6,.2)";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-  particles.forEach((p,i)=>{
-    p.update();p.draw();
-    if(p.life<=0) particles.splice(i,1);
-  });
-  requestAnimationFrame(animate);
-}
-animate();
-
-/* ================= TIMELINE ================= */
-let t=60;
-const timeEl=document.getElementById("time");
-const line=document.getElementById("line");
-
-const beats={
-  55:"This year didn’t go as planned.",
-  50:"Some days were heavy.",
-  45:"Some nights were long.",
-  40:"You questioned yourself.",
-  35:"You said ‘next year will be better’.",
-  30:"Okay… pause.",
-  29:"Describe this year in ONE word."
-};
-
-gsap.from("#title",{opacity:0,y:20});
-gsap.from("#line",{opacity:0,y:20,delay:.3});
-gsap.from("#time",{opacity:0,scale:.8,delay:.6});
-
-const interval=setInterval(()=>{
-  t--;
-  timeEl.textContent=t;
-
-  if(beats[t]){
-    line.textContent=beats[t];
-    gsap.from(line,{opacity:0,y:10});
-  }
-
-  if(t===29){
-    clearInterval(interval);
-    captureWord();
-  }
-},1000);
-
-/* ================= USER WORD ================= */
-function captureWord(){
-  const input=document.createElement("input");
-  input.placeholder="One word.";
-  document.getElementById("stage").appendChild(input);
-  input.style.display="block";
-  input.focus();
-
-  input.addEventListener("keydown",e=>{
-    if(e.key==="Enter" && input.value.trim()){
-      explode(input.value.trim());
-      gsap.to(input,{opacity:0,onComplete:()=>input.remove()});
-      resumeCountdown();
+  
+  const current = document.querySelector('.chapter.active');
+  current.classList.remove('active');
+  
+  setTimeout(() => {
+    if (response === 'yes') {
+      document.getElementById('epilogue').classList.add('active');
+    } else {
+      current.innerHTML = `
+        <div class="chapter-number">A Pause</div>
+        <h2>I Understand</h2>
+        <p>
+          Some stories need more time. Some chapters need to be reread before moving forward. And that's okay.
+        </p>
+        <p>
+          Wherever this leads, know that asking the question was worth it. You're worth it.
+        </p>
+        <p style="text-align: center; margin-top: 3rem; color: #999;">❤️</p>
+      `;
+      current.classList.add('active');
     }
-  });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 300);
 }
 
-function explode(word){
-  const x=innerWidth/2;
-  const y=innerHeight/2;
-  word.split("").forEach((_,i)=>{
-    for(let j=0;j<6;j++) particles.push(new Particle(x,y));
-  });
-}
-
-function resumeCountdown(){
-  const resume=setInterval(()=>{
-    t--;
-    timeEl.textContent=t;
-    if(t<=0){
-      clearInterval(resume);
-      midnight();
+// Check mode for you to see her response
+async function checkResponse() {
+  try {
+    const result = await window.storage.get('proposal_response', true);
+    if (result && result.value) {
+      const data = JSON.parse(result.value);
+      const date = new Date(data.timestamp).toLocaleString();
+      document.querySelector('.book').innerHTML = `
+        <div style="text-align: center; padding: 3rem;">
+          <h2 style="color: ${data.answer === 'yes' ? '#4a9d5f' : '#d4a574'}; font-size: 3rem; margin-bottom: 1rem;">
+            ${data.answer === 'yes' ? '✓ She said YES!' : '○ She needs time'}
+          </h2>
+          <p style="font-size: 1.2rem; color: #666;">
+            Response received: ${date}
+          </p>
+          <p style="margin-top: 2rem; font-size: 0.95rem; color: #999;">
+            ${data.answer === 'yes' ? 'Congratulations! 🎉❤️' : 'Give her space and time ❤️'}
+          </p>
+        </div>
+      `;
+    } else {
+      document.querySelector('.book').innerHTML = `
+        <div style="text-align: center; padding: 3rem;">
+          <h2 style="color: #999; font-size: 2rem;">No response yet</h2>
+          <p style="margin-top: 1rem; color: #666;">She hasn't answered yet. Be patient! ❤️</p>
+        </div>
+      `;
     }
-  },1000);
+  } catch (err) {
+    document.querySelector('.book').innerHTML = `
+      <div style="text-align: center; padding: 3rem;">
+        <h2 style="color: #999;">No response yet</h2>
+        <p style="margin-top: 1rem; color: #666;">She hasn't answered yet. Be patient! ❤️</p>
+      </div>
+    `;
+  }
 }
 
-/* ================= MIDNIGHT ================= */
-function midnight(){
-  gsap.to("#stage",{opacity:0,duration:1,onComplete:()=>{
-    document.getElementById("stage").style.display="none";
-    showFinal();
-  }});
-}
-
-/* ================= FINAL ================= */
-function showFinal(){
-  const year=new Date().getFullYear()+1;
-  const final=document.getElementById("final");
-  final.style.display="flex";
-
-  document.getElementById("wish").textContent=`Welcome ${year}`;
-  document.getElementById("personal").textContent=
-    "You survived the chaos. Now build something better.";
-
-  gsap.from("#wish",{scale:.6,opacity:0});
-  gsap.from("#personal",{opacity:0,y:20,delay:.3});
-
-  setInterval(()=>{
-    const x=Math.random()*canvas.width;
-    const y=Math.random()*canvas.height/2;
-    for(let i=0;i<80;i++) particles.push(new Particle(x,y));
-  },600);
+// Auto-check if URL has ?check parameter
+if (window.location.search.includes('check')) {
+  checkResponse();
 }
 </script>
+
 </body>
 </html>
